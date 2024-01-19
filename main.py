@@ -2,14 +2,13 @@ import os
 
 from PIL import Image, ImageDraw
 
-path_image = "abcrki.jpg"
+path_image = "Abceda/crkaz.jpg"
+letter_1 = "Z1"
+letter_2 = "Z"
 image = Image.open(path_image)
 
 width, height = image.size
 print(width, height)
-
-start_x, start_y = 0, 0
-end_x, end_y = width, height
 
 number_squares_x = 10
 number_squares_y = 20
@@ -20,29 +19,51 @@ height_square = height // number_squares_y
 print(f"Širina kvadrata: {width_square}px")
 print(f"Višina kvadrata: {height_square}px")
 
-letter = "B"
-fileName = letter
+counter_A = 0
+counter_B = 0
 
-if not os.path.exists(fileName):
-    os.makedirs(fileName)
+folder_A = letter_1
+if not os.path.exists(folder_A):
+    os.makedirs(folder_A)
 
-counter = 0
+folder_B = letter_2
+if not os.path.exists(folder_B):
+    os.makedirs(folder_B)
+
+start_y_B, start_x_B = 0, 0
+break_outer = False
+
 for j in range(number_squares_y):
     for i in range(number_squares_x):
         x1 = i * width_square
         y1 = j * height_square
         x2 = x1 + width_square
         y2 = y1 + height_square
-        counter += 1
+        counter_A += 1
 
-        if counter == 100:
-            letter = 'B'
+        if counter_A == 101:
+            start_y_B = j
+            start_x_B = 0
+            break_outer = True
+            break
+        crop_square = image.crop((x1, y1, x2, y2))
+        name_of_crop = f"{folder_A}/{letter_1}{counter_A}.png"
+        crop_square.save(name_of_crop)
 
-        cropSquare = image.crop((x1, y1, x2, y2))
+    if break_outer:
+        break
 
-        nameOfCropS = f"{fileName}/{letter}{counter}.png"
 
-        cropSquare.save(nameOfCropS)
-
+for j in range(start_y_B, number_squares_y):
+    for i in range(start_x_B, number_squares_x):
+        x1 = i * width_square
+        y1 = j * height_square
+        x2 = x1 + width_square
+        y2 = y1 + height_square
+        counter_B += 1
+        crop_square = image.crop((x1, y1, x2, y2))
+        name_of_crop = f"{folder_B}/{letter_2}{counter_B}.png"
+        crop_square.save(name_of_crop)
 
 image.close()
+
